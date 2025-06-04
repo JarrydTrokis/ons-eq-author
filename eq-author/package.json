@@ -105,9 +105,9 @@
     "draft-convert": "2.1.12",
     "draft-js": "latest",
     "draft-js-block-breakout-plugin": "latest",
+    "draft-js-import-html": "latest",
     "draft-js-plugins-editor": "latest",
     "draft-js-raw-content-state": "latest",
-    "draft-js-import-html": "latest",
     "draftjs-filters": "^2.5.0",
     "firebase": "latest",
     "firebaseui": "latest",
@@ -208,5 +208,6 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "proxy": "http://localhost:4000"
+  "proxy": "http://localhost:4000",
+  "packageManager": "yarn@1.22.1"
 }

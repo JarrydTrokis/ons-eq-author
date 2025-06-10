@@ -29,7 +29,7 @@
     "dynamoose": "latest",
     "express": "latest",
     "express-pino-logger": "latest",
-    "firebase-admin": "^9.11.0",
+    "firebase-admin": "^13.4.0",
     "google-auth-library": "^9.0.0",
     "graphql": "latest",
     "graphql-anywhere": "latest",

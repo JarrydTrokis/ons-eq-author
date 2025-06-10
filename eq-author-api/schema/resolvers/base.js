@@ -16,7 +16,8 @@ const {
 } = require("lodash");
 const GraphQLJSON = require("graphql-type-json");
 const { v4: uuidv4 } = require("uuid");
-const { withFilter, UserInputError } = require("apollo-server-express");
+const { withFilter } = require("graphql-subscriptions");
+const { UserInputError  } = require("@apollo/server");
 const fetch = require("node-fetch");
 const { logger } = require("../../utils/logger");
 
@@ -228,8 +229,7 @@ const Resolvers = {
 
       const shouldApplyNeIdsFilter =
         filter.ne?.ids !== null &&
-        filter.ne?.ids !== undefined &&
-        filter.ne?.ids !== [];
+        filter.ne?.ids !== undefined
 
       if (shouldApplyNeIdsFilter) {
         const ids = filter.ne.ids;

@@ -6,6 +6,7 @@ import config from "config";
 const PROJECT_ID = config.REACT_APP_FIREBASE_PROJECT_ID;
 const API_KEY = config.REACT_APP_FIREBASE_API_KEY;
 
+
 firebase.initializeApp({
   apiKey: API_KEY,
   authDomain: `${PROJECT_ID}.firebaseapp.com`,

@@ -1,11 +1,13 @@
 const express = require("express");
-const { ApolloServer } = require("apollo-server-express");
+const { ApolloServer } = require("@apollo/server");
 const cors = require("cors");
 const pinoMiddleware = require("express-pino-logger");
 const helmet = require("helmet");
 const noir = require("pino-noir");
 const bodyParser = require("body-parser");
 const http = require("http");
+const { expressMiddleware } = require('@as-integrations/express5');
+
 
 const status = require("./middleware/status");
 const { getLaunchUrl } = require("./middleware/launch");
@@ -62,95 +64,6 @@ const createApp = () => {
     app.use(cors());
   }
 
-  app.use(
-    "/graphql",
-    helmet({
-      referrerPolicy: {
-        policy: "no-referrer",
-      },
-      frameguard: {
-        action: "deny",
-      },
-      hsts: {
-        maxAge: 15552000,
-        includeSubDomains: true,
-      },
-      noSniff: true,
-      crossDomain: {
-        permittedPolicies: "none",
-      },
-      clearSiteData: ["cache", "cookies", "storage"],
-      crossOriginEmbedderPolicy: true,
-      crossOriginOpenerPolicy: "same-origin",
-      crossOriginResourcePolicy: "same-origin",
-      permissionsPolicy: {
-        features: {
-          accelerometer: [],
-          autoplay: [],
-          camera: [],
-          displayCapture: [],
-          documentDomain: [],
-          encryptedMedia: [],
-          fullscreen: [],
-          geolocation: [],
-          gyroscope: [],
-          magnetometer: [],
-          microphone: [],
-          midi: [],
-          payment: [],
-          pictureInPicture: [],
-          publickeyCredentialsGet: [],
-          screenWakeLock: [],
-          syncXhr: ["self"],
-          usb: [],
-          webShare: [],
-          xrSpatialTracking: [],
-        },
-      },
-      cacheControl: {
-        noStore: true,
-        maxAge: 0,
-      },
-      pragma: "no-cache",
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          objectSrc: ["'none'"],
-          childSrc: ["'self'"],
-          frameAncestors: ["'none"],
-          upgradeInsecureRequests: ["true"],
-          blockAllMixedContent: ["true"],
-          baseUri: ["'none'"],
-          fontSrc: ["'self'", "https://fonts.gstatic.com"],
-          styleSrc: [
-            "'self'",
-            "http://cdn.jsdelivr.net/npm/@apollographql/",
-            "https://fonts.googleapis.com",
-            // These will change with graphql server versions
-            "'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='",
-            "'sha256-iRiwFogHwyIOlQ0vgwGxLZXMnuPZa9eZnswp4v8s6fE='",
-            "'sha256-WYkrRZYpK8d/rqMjoMTIfcPzRxeojQUncPzhW9/2pg8='",
-            "'sha256-jQoC6QpIonlMBPFbUGlJFRJFFWbbijMl7Z8XqWrb46o='",
-          ],
-          scriptSrc: [
-            "'self'",
-            "https://www.googleapis.com/identitytoolkit/v3",
-            "http://cdn.jsdelivr.net/npm/@apollographql/",
-            "'sha256-qQ+vMtTOJ7ZAi9QUiV74BIEp2+xQJt7uiJ47QICu6xI='",
-          ],
-          imgSrc: ["'self'", "http://cdn.jsdelivr.net/npm/@apollographql/"],
-        },
-      },
-    }),
-    pino,
-    identificationMiddleware(logger),
-    rejectUnidentifiedUsers,
-    loadQuestionnaire,
-    runQuestionnaireMigrations(logger)(require("./migrations")),
-    loadComments,
-    validateQuestionnaire
-  );
-
   const getUserFromHeader = getUserFromHeaderBuilder(logger);
   const server = new ApolloServer({
     ...schema,
@@ -179,7 +92,99 @@ const createApp = () => {
     plugins: extensions,
   });
 
-  server.applyMiddleware({ app });
+  server.start().then(() => {
+    logger.info("Apollo Server started");
+
+    app.use(
+      "/graphql",
+      expressMiddleware(server),
+      helmet({
+        referrerPolicy: {
+          policy: "no-referrer",
+        },
+        frameguard: {
+          action: "deny",
+        },
+        hsts: {
+          maxAge: 15552000,
+          includeSubDomains: true,
+        },
+        noSniff: true,
+        crossDomain: {
+          permittedPolicies: "none",
+        },
+        clearSiteData: ["cache", "cookies", "storage"],
+        crossOriginEmbedderPolicy: true,
+        crossOriginOpenerPolicy: "same-origin",
+        crossOriginResourcePolicy: "same-origin",
+        permissionsPolicy: {
+          features: {
+            accelerometer: [],
+            autoplay: [],
+            camera: [],
+            displayCapture: [],
+            documentDomain: [],
+            encryptedMedia: [],
+            fullscreen: [],
+            geolocation: [],
+            gyroscope: [],
+            magnetometer: [],
+            microphone: [],
+            midi: [],
+            payment: [],
+            pictureInPicture: [],
+            publickeyCredentialsGet: [],
+            screenWakeLock: [],
+            syncXhr: ["self"],
+            usb: [],
+            webShare: [],
+            xrSpatialTracking: [],
+          },
+        },
+        cacheControl: {
+          noStore: true,
+          maxAge: 0,
+        },
+        pragma: "no-cache",
+        contentSecurityPolicy: {
+          directives: {
+            defaultSrc: ["'self'"],
+            objectSrc: ["'none'"],
+            childSrc: ["'self'"],
+            frameAncestors: ["'none"],
+            upgradeInsecureRequests: ["true"],
+            blockAllMixedContent: ["true"],
+            baseUri: ["'none'"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            styleSrc: [
+              "'self'",
+              "http://cdn.jsdelivr.net/npm/@apollographql/",
+              "https://fonts.googleapis.com",
+              // These will change with graphql server versions
+              "'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='",
+              "'sha256-iRiwFogHwyIOlQ0vgwGxLZXMnuPZa9eZnswp4v8s6fE='",
+              "'sha256-WYkrRZYpK8d/rqMjoMTIfcPzRxeojQUncPzhW9/2pg8='",
+              "'sha256-jQoC6QpIonlMBPFbUGlJFRJFFWbbijMl7Z8XqWrb46o='",
+            ],
+            scriptSrc: [
+              "'self'",
+              "https://www.googleapis.com/identitytoolkit/v3",
+              "http://cdn.jsdelivr.net/npm/@apollographql/",
+              "'sha256-qQ+vMtTOJ7ZAi9QUiV74BIEp2+xQJt7uiJ47QICu6xI='",
+            ],
+            imgSrc: ["'self'", "http://cdn.jsdelivr.net/npm/@apollographql/"],
+          },
+        },
+      }),
+      pino,
+      identificationMiddleware(logger),
+      rejectUnidentifiedUsers,
+      loadQuestionnaire,
+      runQuestionnaireMigrations(logger)(require("./migrations")),
+      loadComments,
+      validateQuestionnaire
+    );
+  });
 
   app.get("/status", status);
 
@@ -206,7 +211,6 @@ const createApp = () => {
   app.post("/signIn", identificationMiddleware(logger), upsertUser);
 
   const httpServer = http.createServer(app);
-  server.installSubscriptionHandlers(httpServer);
 
   logger.info(`🚀 Server ready at ${server.graphqlPath}`);
   logger.info(`🚀 Subscriptions ready at ${server.subscriptionsPath}`);

@@ -1,4 +1,4 @@
-const { UserInputError } = require("apollo-server-express");
+const { UserInputError } = require("@apollo/server");
 const isMutuallyExclusive = require("../../utils/isMutuallyExclusive");
 const containsSingleDestinationType = isMutuallyExclusive([
   "sectionId",

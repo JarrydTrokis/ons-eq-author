@@ -1,13 +1,16 @@
-FROM node:14-alpine
+FROM node:24-alpine
 
-RUN apk add --no-cache gcc python3 && \
-  python3 -m ensurepip && \
-  rm -r /usr/lib/python*/ensurepip && \
-  pip3 install --upgrade pip setuptools && \
-  if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
-  if [ ! -e /usr/bin/python ]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
-  rm -r /root/.cache && \
-  pip install --upgrade awscli==1.16.27
+# Install build tools and python3 with pip
+RUN apk add --no-cache gcc python3 py3-pip
+
+# Create a virtual environment for Python packages not available via apk
+RUN python3 -m venv /opt/venv && \
+    . /opt/venv/bin/activate && \
+    pip install --upgrade pip setuptools && \
+    pip install awscli==1.16.27
+
+# Ensure the virtualenv's bin directory is in PATH for all future RUN, CMD, ENTRYPOINT
+ENV PATH="/opt/venv/bin:$PATH"
 
 EXPOSE 4000
 ENV PORT=4000

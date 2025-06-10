@@ -1,4 +1,4 @@
-const { ForbiddenError } = require("apollo-server-express");
+const { ForbiddenError } = require("@apollo/server");
 
 const hasWritePermission = (questionnaire, user) =>
   questionnaire.createdBy === user.id ||

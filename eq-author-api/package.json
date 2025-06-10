@@ -14,11 +14,12 @@
     "create-migration": "node scripts/createMigration.js"
   },
   "dependencies": {
+    "@apollo/server": "^4.12.2",
+    "@as-integrations/express5": "^1.1.0",
     "ajv": "^8.6.2",
     "ajv-errors": "^3.0.0",
     "ajv-keywords": "^5.0.0",
     "apollo-opentracing": "latest",
-    "apollo-server-express": "latest",
     "body-parser": "latest",
     "chalk": "latest",
     "cheerio": "^1.0.0-rc.10",
@@ -34,6 +35,7 @@
     "graphql-anywhere": "latest",
     "graphql-iso-date": "latest",
     "graphql-redis-subscriptions": "latest",
+    "graphql-subscriptions": "^3.0.0",
     "graphql-tools": "latest",
     "graphql-type-json": "latest",
     "helmet": "latest",

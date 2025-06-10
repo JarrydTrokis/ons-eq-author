@@ -13,7 +13,7 @@ const removeExtraSpaces = require("../../utils/removeExtraSpaces");
 const createFolder = require("../../src/businessLogic/createFolder");
 
 const { getQuestionnaire } = require("../../db/datastore");
-const { UserInputError } = require("apollo-server-express");
+const { UserInputError } = require("@apollo/server");
 
 const { createMutation } = require("./createMutation");
 

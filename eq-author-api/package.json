@@ -88,7 +88,7 @@
     ]
   },
   "devDependencies": {
-    "@shelf/jest-mongodb": "^2.0.1",
+    "@shelf/jest-mongodb": "^5.2.2",
     "commander": "latest",
     "dynamodb-admin": "latest",
     "eslint": "^7.31.0",
